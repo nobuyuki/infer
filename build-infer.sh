@@ -27,6 +27,8 @@ function usage() {
   echo "   all      build everything (default)"
   echo "   clang    build C and Objective-C analyzer"
   echo "   java     build Java analyzer"
+  echo "   kotlin   build Kotlin analyzer"
+  echo "   ocaml    build OCaml analyzer"
   echo
   echo " options:"
   echo "   -h,--help             show this message"
@@ -44,6 +46,8 @@ function usage() {
 # arguments
 BUILD_CLANG=${BUILD_CLANG:-no}
 BUILD_JAVA=${BUILD_JAVA:-no}
+BUILD_KOTLIN=${BUILD_KOTLIN:-no}
+BUILD_OCAML=${BUILD_OCAML:-no}
 INTERACTIVE=${INTERACTIVE:-yes}
 ONLY_SETUP_OPAM=${ONLY_SETUP_OPAM:-no}
 INFER_OPAM_SWITCH=${INFER_OPAM_SWITCH:-$INFER_OPAM_SWITCH_DEFAULT}
@@ -56,6 +60,8 @@ while [[ $# > 0 ]]; do
     all)
       BUILD_CLANG=yes
       BUILD_JAVA=yes
+      BUILD_KOTLIN=yes
+      BUILD_OCAML=yes
       shift
       continue
       ;;
@@ -66,6 +72,16 @@ while [[ $# > 0 ]]; do
       ;;
     java)
       BUILD_JAVA=yes
+      shift
+      continue
+      ;;
+    kotlin)
+      BUILD_KOTLIN=yes
+      shift
+      continue
+      ;;
+    ocaml)
+      BUILD_OCAML=yes
       shift
       continue
       ;;
@@ -103,9 +119,11 @@ while [[ $# > 0 ]]; do
 done
 
 # if no arguments then build both clang and Java
-if [ "$BUILD_CLANG" = "no" ] && [ "$BUILD_JAVA" = "no" ]; then
+if [ "$BUILD_CLANG" = "no" ] && [ "$BUILD_JAVA" = "no" ] && [ "$BUILD_KOTLIN" = "no" ] && [ "$BUILD_OCAML" = "no" ] ; then
   BUILD_CLANG=yes
   BUILD_JAVA=yes
+  BUILD_KOTLIN=yes
+  BUILD_OCAML=yes
 fi
 
 # enable --yes option for some commands in non-interactive mode
@@ -209,6 +227,12 @@ if [ "$BUILD_CLANG" = "no" ]; then
 fi
 if [ "$BUILD_JAVA" = "no" ]; then
   INFER_CONFIGURE_OPTS+=" --disable-java-analyzers"
+fi
+if [ "$BUILD_KOTLIN" = "no" ]; then
+  INFER_CONFIGURE_OPTS+=" --disable-kotlin-analyzers"
+fi
+if [ "$BUILD_OCAML" = "no" ]; then
+  INFER_CONFIGURE_OPTS+=" --disable-ocaml-analyzers"
 fi
 
 ./configure $INFER_CONFIGURE_OPTS

@@ -68,9 +68,11 @@ $(b,infer) $(b,capture) $(i,[options]) $(b,--compilation-database) $(i,file)
 $(b,infer) $(b,capture) $(i,[options]) $(b,--compilation-database-escaped) $(i,file)
 $(b,infer) $(b,capture) $(i,[options]) $(b,--) $(b,gradle)/$(b,gradlew) $(i,...)
 $(b,infer) $(b,capture) $(i,[options]) $(b,--) $(b,javac) $(i,...)
+$(b,infer) $(b,capture) $(i,[options]) $(b,--) $(b,kotlinc) $(i,...)
 $(b,infer) $(b,capture) $(i,[options]) $(b,--) $(b,make)/$(b,clang)/$(b,gcc) $(i,...)
 $(b,infer) $(b,capture) $(i,[options]) $(b,--) $(b,mvn)/$(b,mvnw) $(i,...)
 $(b,infer) $(b,capture) $(i,[options]) $(b,--) $(b,ndk-build) $(i,...)
+$(b,infer) $(b,capture) $(i,[options]) $(b,--) $(b,ocamlc) $(i,...)    
 $(b,infer) $(b,capture) $(i,[--no-xcpretty]) $(i,[options]) $(b,--) $(b,xcodebuild) $(i,...)|}
     ~description:
       [ `P
@@ -136,7 +138,7 @@ let explore =
 
 let infer =
   mk_command_doc ~title:"Infer Static Analyzer"
-    ~short_description:"static analysis for Java and C/C++/Objective-C/Objective-C++"
+    ~short_description:"static analysis for Java and C/C++/Objective-C/Objective-C++/Kotlin/OCaml"
     ~synopsis:
       {|$(b,infer) $(b,analyze) $(i,[options])
 $(b,infer) $(b,capture) $(i,[options])

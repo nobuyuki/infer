@@ -46,9 +46,13 @@ type build_system =
   | BGradle
   | BJava
   | BJavac
+  | BKotlin
+  | BKotlinc
   | BMake
   | BMvn
   | BNdk
+  | BOcaml
+  | BOcamlc
   | BPython
   | BXcode
   [@@deriving compare]
@@ -399,6 +403,10 @@ val infer_cache : string option
 val infer_is_clang : bool
 
 val infer_is_javac : bool
+
+val infer_is_kotlinc : bool
+
+val infer_is_ocamlc : bool
 
 val inferconfig_file : string option
 

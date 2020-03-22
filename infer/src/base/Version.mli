@@ -25,6 +25,10 @@ val clang_enabled : bool
 
 val java_enabled : bool
 
+val kotlin_enabled : bool
+
+val ocaml_enabled : bool
+
 val python_enabled : bool
 
 val xcode_enabled : bool

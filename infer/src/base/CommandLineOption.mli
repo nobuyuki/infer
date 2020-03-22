@@ -17,6 +17,7 @@ val warnf : ('a, Format.formatter, unit) format -> 'a
 type parse_mode =
   | InferCommand  (** parse arguments as arguments for infer *)
   | Javac  (** parse arguments passed to the Java compiler *)
+  | Kotlinc  (** parse arguments passed to the kotlin compiler *)
   | NoParse  (** all arguments are anonymous arguments, no parsing is attempted *)
   [@@deriving compare]
 

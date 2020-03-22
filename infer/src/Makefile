@@ -157,7 +157,7 @@ roots:=Infer
 ifeq ($(IS_FACEBOOK_TREE),yes)
 roots += $(INFER_CREATE_TRACEVIEW_LINKS_MODULE)
 endif
-clusters:=base clang java IR
+clusters:=base clang java kotlin ocaml IR
 
 ml_src_files:=$(shell find . -not -path "./*stubs*" -regex '\./[a-zA-Z].*\.ml\(i\)*')
 inc_flags:=$(foreach dir,$(shell find . -type d),-I $(dir))
@@ -249,6 +249,8 @@ $(GENERATED_FROM_AUTOCONF): $(MAKEFILE_LIST)
 	  -e "s|@INFER_GIT_BRANCH[@]|$$INFER_GIT_BRANCH|g" \
 	  -e "s|@BUILD_C_ANALYZERS[@]|$(BUILD_C_ANALYZERS)|g" \
 	  -e "s|@BUILD_JAVA_ANALYZERS[@]|$(BUILD_JAVA_ANALYZERS)|g" \
+	  -e "s|@BUILD_KOTLIN_ANALYZERS[@]|$(BUILD_KOTLIN_ANALYZERS)|g" \
+	  -e "s|@BUILD_OCAML_ANALYZERS[@]|$(BUILD_OCAML_ANALYZERS)|g" \
 	  -e "s|@BUILD_PYTHON_ANALYZERS[@]|$(BUILD_PYTHON_ANALYZERS)|g" \
 	  -e "s|@OPAMSWITCH[@]|$(OPAMSWITCH)|g" \
 	  -e "s|@XCODE_SELECT[@]|$(XCODE_SELECT)|g" \

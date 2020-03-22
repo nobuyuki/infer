@@ -21,6 +21,10 @@ let clang = is_yes "@BUILD_C_ANALYZERS@"
 
 let java = is_yes "@BUILD_JAVA_ANALYZERS@"
 
+let kotlin = is_yes "@BUILD_KOTLIN_ANALYZERS@"
+
+let ocaml = is_yes "@BUILD_OCAML_ANALYZERS@"
+
 let python = is_yes "@BUILD_PYTHON_ANALYZERS@"
 
 let facebook = is_yes "@IS_FACEBOOK_TREE@"

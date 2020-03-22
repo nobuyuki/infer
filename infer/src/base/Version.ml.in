@@ -45,6 +45,10 @@ let clang_enabled = is_yes "@BUILD_C_ANALYZERS@"
 
 let java_enabled = is_yes "@BUILD_JAVA_ANALYZERS@"
 
+let kotlin_enabled = is_yes "@BUILD_KOTLIN_ANALYZERS@"
+
+let ocaml_enabled = is_yes "@BUILD_OCAML_ANALYZERS@"
+
 let python_enabled = is_yes "@BUILD_PYTHON_ANALYZERS@"
 
 let xcode_enabled = is_not_no "@XCODE_SELECT@"

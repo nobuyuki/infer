@@ -23,6 +23,8 @@ type mode =
   | Clang of Clang.compiler * string * string list
   | ClangCompilationDB of [`Escaped of string | `Raw of string] list
   | Javac of Javac.compiler * string * string list
+  | Kotlinc of Kotlinc.compiler * string * string list
+  | Ocamlc of Ocamlc.compiler * string * string list
   | Maven of string * string list
   | Python of string list
   | PythonCapture of Config.build_system * string list
@@ -44,6 +46,10 @@ let pp_mode fmt mode =
       ()
   | Javac (_, prog, args) ->
       F.fprintf fmt "Javac driver mode:@\nprog = '%s'@\nargs = %a" prog Pp.cli_args args
+  | Kotlinc (_, prog, args) ->
+      F.fprintf fmt "Kotlinc driver mode:@\nprog = '%s'@\nargs = %a" prog Pp.cli_args args
+  | Ocamlc (_, prog, args) ->
+      F.fprintf fmt "Ocamlc driver mode:@\nprog = '%s'@\nargs = %a" prog Pp.cli_args args
   | Maven (prog, args) ->
       F.fprintf fmt "Maven driver mode:@\nprog = '%s'@\nargs = %a" prog Pp.cli_args args
   | Clang (_, prog, args) ->
@@ -208,9 +214,15 @@ let capture ~changed_files mode =
   | Javac (compiler, prog, args) ->
       if CLOpt.is_originator then L.progress "Capturing in javac mode...@." ;
       Javac.capture compiler ~prog ~args
+  | Kotlinc (compiler, prog, args) ->
+      if CLOpt.is_originator then L.progress "Capturing in kotlinc mode...@." ;
+      Kotlinc.capture compiler ~prog ~args
   | Maven (prog, args) ->
       L.progress "Capturing in maven mode...@." ;
       Maven.capture ~prog ~args
+  | Ocamlc (compiler, prog, args) ->
+      if CLOpt.is_originator then L.progress "Capturing in ocamlc mode...@." ;
+      Ocamlc.capture compiler ~prog ~args
   | Python args ->
       (* pretend prog is the root directory of the project *)
       PythonMain.go args
@@ -378,7 +390,7 @@ let analyze_and_report ?suppress_console_report ~changed_files mode =
     | _, PythonCapture (BBuck, _), _ when not Config.flavors ->
         (* In Buck mode when compilation db is not used, analysis is invoked from capture if buck flavors are not used *)
         (false, false)
-    | _ when Config.infer_is_clang || Config.infer_is_javac ->
+    | _ when Config.infer_is_clang || Config.infer_is_javac || Config.infer_is_kotlinc || Config.infer_is_ocamlc ->
         (* Called from another integration to do capture only. *)
         (false, false)
     | _, _, Linters ->
@@ -397,6 +409,7 @@ let analyze_and_report ?suppress_console_report ~changed_files mode =
         (* else rely on the command line value *) Config.merge
   in
   if should_merge then MergeCapture.merge_captured_targets () ;
+  Printf.printf "TOMIZAWA: (%b, %b)" should_analyze should_report; 
   if should_analyze || should_report then (
     if SourceFiles.is_empty () then error_nothing_to_analyze mode
     else if should_analyze then execute_analyze ~changed_files ;
@@ -424,6 +437,10 @@ let assert_supported_mode required_analyzer requested_mode_string =
         Version.clang_enabled
     | `Java ->
         Version.java_enabled
+    | `Kotoin ->
+        Version.kotlin_enabled
+    | `Ocaml ->
+        Version.ocaml_enabled
     | `Python ->
         Version.python_enabled
     | `Xcode ->
@@ -436,6 +453,10 @@ let assert_supported_mode required_analyzer requested_mode_string =
           "clang"
       | `Java ->
           "java"
+      | `Kotlin ->
+          "kotlin"
+      | `Ocaml ->
+          "ocaml"
       | `Python ->
           "python"
       | `Xcode ->
@@ -449,10 +470,12 @@ let assert_supported_mode required_analyzer requested_mode_string =
 
 let assert_supported_build_system build_system =
   match (build_system : Config.build_system) with
-  | BAnt | BGradle | BJava | BJavac | BMvn ->
+  | BAnt | BGradle | BJava | BJavac | BKotlin | BKotlinc | BMvn ->
       Config.string_of_build_system build_system |> assert_supported_mode `Java
   | BClang | BMake | BNdk ->
       Config.string_of_build_system build_system |> assert_supported_mode `Clang
+  | BOcaml | BOcamlc ->
+      Config.string_of_build_system build_system |> assert_supported_mode `Ocaml
   | BPython ->
       Config.string_of_build_system build_system |> assert_supported_mode `Python
   | BXcode ->
@@ -506,8 +529,16 @@ let mode_of_build_command build_cmd =
           Javac (Javac.Java, prog, args)
       | BJavac ->
           Javac (Javac.Javac, prog, args)
+      | BKotlin ->
+          Kotlinc (Kotlinc.Kotlin, prog, args)
+      | BKotlinc ->
+          Kotlinc (Kotlinc.Kotlinc, prog, args)
       | BMvn ->
           Maven (prog, args)
+      | BOcaml ->
+          Ocamlc (Ocamlc.Ocaml, prog, args)
+      | BOcamlc ->
+          Ocamlc (Ocamlc.Ocamlc, prog, args)
       | BPython ->
           Python args
       | BXcode when Config.xcpretty ->
@@ -528,6 +559,12 @@ let mode_from_command_line =
     | _ when Config.infer_is_javac ->
         let build_args = match Array.to_list Sys.argv with _ :: args -> args | [] -> [] in
         Javac (Javac.Javac, "javac", build_args)
+    | _ when Config.infer_is_kotlinc ->
+        let build_args = match Array.to_list Sys.argv with _ :: args -> args | [] -> [] in
+        Kotlinc (Kotlinc.Kotlinc, "kotlinc", build_args)
+    | _ when Config.infer_is_ocamlc ->
+        let build_args = match Array.to_list Sys.argv with _ :: args -> args | [] -> [] in
+        Ocamlc (Ocamlc.Ocamlc, "ocamlc", build_args)
     | Some path ->
         assert_supported_mode `Java "Buck genrule" ;
         BuckGenrule path

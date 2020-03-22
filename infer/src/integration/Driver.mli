@@ -20,6 +20,8 @@ type mode =
   | Clang of Clang.compiler * string * string list
   | ClangCompilationDB of [`Escaped of string | `Raw of string] list
   | Javac of Javac.compiler * string * string list
+  | Kotlinc of Kotlinc.compiler * string * string list
+  | Ocamlc of Ocamlc.compiler * string * string list
   | Maven of string * string list
   | Python of string list
   | PythonCapture of Config.build_system * string list

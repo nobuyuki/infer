@@ -70,6 +70,24 @@ AC_ARG_ENABLE(java-analyzers,
 BUILD_JAVA_ANALYZERS=$enable_java_analyzers
 AC_SUBST([BUILD_JAVA_ANALYZERS])
 
+AC_ARG_ENABLE(kotlin-analyzers,
+  AS_HELP_STRING([--disable-kotlin-analyzers],
+    [do not build the Kotlin analyzers (default is to build them)]),
+  ,
+  enable_kotlin_analyzers=yes)
+
+BUILD_KOTLIN_ANALYZERS=$enable_kotlin_analyzers
+AC_SUBST([BUILD_KOTLIN_ANALYZERS])
+
+AC_ARG_ENABLE(ocaml-analyzers,
+  AS_HELP_STRING([--disable-ocaml-analyzers],
+    [do not build the Ocaml analyzers (default is to build them)]),
+  ,
+  enable_ocaml_analyzers=yes)
+
+BUILD_OCAML_ANALYZERS=$enable_ocaml_analyzers
+AC_SUBST([BUILD_OCAML_ANALYZERS])
+
 AC_ARG_ENABLE(python-analyzers,
   AS_HELP_STRING([--disable-python-analyzers],
     [do not build the Python analyzers (default is to build them)]),

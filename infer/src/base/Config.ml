@@ -93,9 +93,13 @@ type build_system =
   | BGradle
   | BJava
   | BJavac
+  | BKotlin
+  | BKotlinc
   | BMake
   | BMvn
   | BNdk
+  | BOcaml
+  | BOcamlc
   | BPython
   | BXcode
   [@@deriving compare]
@@ -113,6 +117,8 @@ let build_system_exe_assoc =
   ; (BGradle, "gradlew")
   ; (BJava, "java")
   ; (BJavac, "javac")
+  ; (BKotlin, "kotlin")
+  ; (BKotlinc, "kotlinc")
   ; (BClang, "cc")
   ; (BClang, "clang")
   ; (BClang, "gcc")
@@ -126,6 +132,8 @@ let build_system_exe_assoc =
   ; (BMvn, "mvn")
   ; (BMvn, "mvnw")
   ; (BNdk, "ndk-build")
+  ; (BOcaml, "ocaml")
+  ; (BOcaml, "ocamlc")
   ; (BPython, "python")
   ; (BXcode, "xcodebuild") ]
 
@@ -283,7 +291,7 @@ let save_compact_summaries = true
 (** If true enables printing proposition compatible for the SMT project *)
 let smt_output = false
 
-let source_file_extentions = [".java"; ".m"; ".mm"; ".c"; ".cc"; ".cpp"; ".h"]
+let source_file_extentions = [".ml"; ".mli"; ".kt"; ".java"; ".m"; ".mm"; ".c"; ".cc"; ".cpp"; ".h"]
 
 let specs_dir_name = "specs"
 
@@ -478,9 +486,14 @@ let env_inside_maven = `Extend [(infer_inside_maven_env_var, "1")]
 
 let infer_is_javac = maven
 
+let infer_is_kotlinc = maven
+
+let infer_is_ocamlc = false      (* TODO *)
+
 let startup_action =
   let open CLOpt in
   if infer_is_javac then Javac
+  else if infer_is_kotlinc then Kotlinc
   else if !Sys.interactive then NoParse
   else if infer_is_clang then NoParse
   else InferCommand

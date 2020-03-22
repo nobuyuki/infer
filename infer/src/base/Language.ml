@@ -8,11 +8,11 @@
  *)
 open! IStd
 
-type t = Clang | Java | Python [@@deriving compare]
+type t = Clang | Java | Kotlin | Ocaml | Python [@@deriving compare]
 
 let equal = [%compare.equal : t]
 
-let language_to_string = [(Clang, "C/C++/ObjC"); (Java, "Java"); (Python, "python")]
+let language_to_string = [(Clang, "C/C++/ObjC"); (Java, "Java"); (Kotlin, "Kotlin"); (Ocaml, "OCaml"); (Python, "python")]
 
 let to_string lang = List.Assoc.find_exn language_to_string ~equal lang
 
